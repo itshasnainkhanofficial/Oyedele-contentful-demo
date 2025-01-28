@@ -1,5 +1,4 @@
 import Image from "next/image";
-// import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import Link from "next/link"
 import Layout from "@/app/components/Layout"
 import { Star } from "lucide-react"
