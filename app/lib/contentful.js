@@ -13,7 +13,6 @@ export const getProductsList = async () => {
     const entries = await client.getEntries({
         content_type: "productPage",
         order: "-sys.updatedAt",
-        cacheKey: Date.now(),
     });
     return entries;
 };
@@ -22,7 +21,6 @@ export const getProductBySlug = async (slug) => {
     const entries = await client.getEntries({
         content_type: "productPage",
         order: "-sys.updatedAt",
-        cacheKey: Date.now(),
     });
     return entries.items.find((item) => item.fields.slug === slug);
 };
