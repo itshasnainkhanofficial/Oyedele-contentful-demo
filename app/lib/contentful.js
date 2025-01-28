@@ -7,7 +7,7 @@ const client = contentful.createClient({
 });
 
 const getProductsList = async () => {
-    const entries = await client.getEntries({ content_type: "productPage" });
+    const entries = await client.getEntries({ content_type: "productPage", order: "-sys.updatedAt" });
     return entries;
 };
 
