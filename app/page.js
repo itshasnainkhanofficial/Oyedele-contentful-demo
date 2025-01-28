@@ -7,8 +7,21 @@ import { getProductsList } from "@/app/lib/contentful";
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-  const { items } = await getProductsList();
-  const productList = items?.map((item) => item?.fields);
+  let productList = [];
+
+  try {
+    const { items } = await getProductsList();
+
+    productList = items?.map((item) => ({
+      title: item?.fields?.title || "No Title",
+      price: item?.fields?.price || 0,
+      ratings: item?.fields?.ratings || 0,
+      slug: item?.fields?.slug || "no-slug",
+      url: item?.fields?.url || { fields: { file: { url: "" }, title: "No Image" } },
+    })) || [];
+  } catch (error) {
+    console.error("Error fetching products:", error);
+  }
 
   return (
     <Layout>
@@ -22,38 +35,43 @@ export default async function Home() {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold mb-6 text-black">Featured Products</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-          {productList?.map((product) => (
-            <Link
-              href={`/product/${product.slug}`}
-              key={product.slug}
-              className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="relative pb-[100%]">
-                <Image
-                  src={`https:${product.url.fields.file.url}`}
-                  alt={product.url.fields.title}
-                  width={200}
-                  height={200}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
-                />
-              </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold mb-2 text-black">{product?.title}</h3>
-                <p className="text-gray-600 mb-2">${product?.price?.toFixed(2)}</p>
-                <div className="flex items-center">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={20}
-                      className={i < Math.floor(product?.ratings) ? "text-yellow-400" : "text-gray-300"}
-                      fill={i < Math.floor(product?.ratings) ? "currentColor" : "none"}
-                    />
-                  ))}
-                  <span className="ml-2 text-sm text-gray-600">({product?.ratings.toFixed(1)})</span>
+          {productList.map((product) => {
+            const imageUrl = product?.url?.fields?.file?.url;
+            if (!imageUrl) return null;
+
+            return (
+              <Link
+                href={`/product/${product.slug}`}
+                key={product.slug}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+              >
+                <div className="relative pb-[100%]">
+                  <Image
+                    src={`https:${imageUrl}`}
+                    alt={product.url.fields.title || "Product Image"}
+                    width={200}
+                    height={200}
+                    className="absolute top-0 left-0 w-full h-full object-cover"
+                  />
                 </div>
-              </div>
-            </Link>
-          ))}
+                <div className="p-4">
+                  <h3 className="text-lg font-semibold mb-2 text-black">{product.title}</h3>
+                  <p className="text-gray-600 mb-2">${product.price.toFixed(2)}</p>
+                  <div className="flex items-center">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        size={20}
+                        className={i < Math.floor(product.ratings) ? "text-yellow-400" : "text-gray-300"}
+                        fill={i < Math.floor(product.ratings) ? "currentColor" : "none"}
+                      />
+                    ))}
+                    <span className="ml-2 text-sm text-gray-600">({product.ratings.toFixed(1)})</span>
+                  </div>
+                </div>
+              </Link>
+            );
+          })}
         </div>
       </section>
 

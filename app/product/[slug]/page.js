@@ -5,27 +5,38 @@ import { getProductBySlug } from "@/app/lib/contentful";
 import { documentToReactComponents } from "@contentful/rich-text-react-renderer";
 
 export default async function ProductPage({ params }) {
-  const product = await getProductBySlug(params.slug);
+  let product = null;
 
-  if (!product) {
+  try {
+    product = await getProductBySlug(params.slug);
+
+    if (!product?.fields) {
+      notFound();
+    }
+  } catch (error) {
+    console.error("Error fetching product:", error);
     notFound();
   }
 
-  const rating = product.fields.ratings || 0; 
-  const quantity = product.fields.quantity || 1;
+  const rating = product?.fields?.ratings || 0;
+  const quantity = product?.fields?.quantity || 1;
+  const imageUrl = product?.fields?.url?.fields?.file?.url || "";
+  const title = product?.fields?.title || "No Title";
+  const price = product?.fields?.price || 0;
+  const description = product?.fields?.description || "";
 
   return (
     <Layout>
       <div className="bg-white rounded-lg shadow-lg p-6 flex flex-col md:flex-row gap-8">
         <div className="md:w-1/2">
           <img
-            src={`https:${product.fields.url.fields.file.url}`}
-            alt={product.fields.title}
+            src={`https:${imageUrl}`}
+            alt={title}
             className="w-full h-auto rounded-lg shadow-md"
           />
         </div>
         <div className="md:w-1/2">
-          <h1 className="text-3xl font-bold mb-4 text-black">{product.fields.title}</h1>
+          <h1 className="text-3xl font-bold mb-4 text-black">{title}</h1>
           <div className="flex items-center mb-4">
             {[...Array(5)].map((_, i) => (
               <Star
@@ -38,10 +49,10 @@ export default async function ProductPage({ params }) {
             <span className="ml-2 text-sm text-gray-600">({rating.toFixed(1)}) 120 reviews</span>
           </div>
           <p className="text-2xl font-semibold text-black mb-4">
-            ${product.fields.price.toFixed(2)}
+            ${price.toFixed(2)}
           </p>
           <div className="text-gray-600 mb-6">
-            {documentToReactComponents(product.fields.description)}
+            {documentToReactComponents(description)}
           </div>
           <div className="mb-6">
             <label
