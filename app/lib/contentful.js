@@ -6,15 +6,18 @@ const client = contentful.createClient({
     environment: "master"
 });
 
-const getProductsList = async () => {
-    const entries = await client.getEntries({ content_type: "productPage", order: "-sys.updatedAt" });
+export const getProductsList = async () => {
+    const entries = await client.getEntries({
+        content_type: "productPage",
+        order: "-sys.updatedAt",
+    });
     return entries;
 };
 
-const getProductBySlug = async (slug) => {
-    const entries = await client.getEntries({ content_type: "productPage" });
-    const product = entries.items.find((item) => item.fields.slug === slug);
-    return product;
-  };
-
-export { getProductsList, getProductBySlug };
+export const getProductBySlug = async (slug) => {
+    const entries = await client.getEntries({
+        content_type: "productPage",
+        order: "-sys.updatedAt",
+    });
+    return entries.items.find((item) => item.fields.slug === slug);
+};

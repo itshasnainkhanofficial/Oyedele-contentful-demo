@@ -1,8 +1,8 @@
 import Image from "next/image";
-import Link from "next/link"
-import Layout from "@/app/components/Layout"
-import { Star } from "lucide-react"
-import { getProductsList } from "./lib/contentful";
+import Link from "next/link";
+import Layout from "@/app/components/Layout";
+import { Star } from "lucide-react";
+import { getProductsList } from "@/app/lib/contentful";
 
 export default async function Home() {
   const { items } = await getProductsList();
@@ -22,11 +22,11 @@ export default async function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {productList?.map((product) => (
             <Link
-              href={`/product/${product.slug}`} key={product.slug}
+              href={`/product/${product.slug}`}
+              key={product.slug}
               className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
             >
               <div className="relative pb-[100%]">
-
                 <Image
                   src={`https:${product.url.fields.file.url}`}
                   alt={product.url.fields.title}
