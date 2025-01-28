@@ -6,7 +6,6 @@ import { documentToReactComponents } from "@contentful/rich-text-react-renderer"
 
 export default async function ProductPage({ params }) {
   const product = await getProductBySlug(params.slug);
-  console.log("single-product", product);
 
   if (!product) {
     notFound();
@@ -41,9 +40,9 @@ export default async function ProductPage({ params }) {
           <p className="text-2xl font-semibold text-black mb-4">
             ${product.fields.price.toFixed(2)}
           </p>
-          <p className="text-gray-600 mb-6">
+          <div className="text-gray-600 mb-6">
             {documentToReactComponents(product.fields.description)}
-          </p>
+          </div>
           <div className="mb-6">
             <label
               htmlFor="quantity"
