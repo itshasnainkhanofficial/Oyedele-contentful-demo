@@ -4,6 +4,8 @@ import Layout from "@/app/components/Layout";
 import { Star } from "lucide-react";
 import { getProductsList } from "@/app/lib/contentful";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
   const { items } = await getProductsList();
   const productList = items?.map((item) => item?.fields);

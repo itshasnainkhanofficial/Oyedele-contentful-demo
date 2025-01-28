@@ -3,13 +3,17 @@ import * as contentful from 'contentful';
 const client = contentful.createClient({
     space: process.env.SPACE_ID,
     accessToken: process.env.ACCESS_TOKEN,
-    environment: "master"
+    environment: "master",
+    headers: {
+        'Cache-Control': 'no-cache'
+    }
 });
 
 export const getProductsList = async () => {
     const entries = await client.getEntries({
         content_type: "productPage",
         order: "-sys.updatedAt",
+        cacheKey: Date.now(),
     });
     return entries;
 };
@@ -18,6 +22,7 @@ export const getProductBySlug = async (slug) => {
     const entries = await client.getEntries({
         content_type: "productPage",
         order: "-sys.updatedAt",
+        cacheKey: Date.now(),
     });
     return entries.items.find((item) => item.fields.slug === slug);
 };
