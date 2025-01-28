@@ -8,7 +8,6 @@ import { getProductsList } from "./lib/contentful";
 export default async function Home() {
   const { items } = await getProductsList();
   const productList = items?.map((item) => item?.fields);
-  console.log("productList", productList);
 
   return (
     <Layout>
